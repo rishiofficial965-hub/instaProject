@@ -10,4 +10,8 @@ postRoutes.post(
   postController.createPostController,
 );
 
+postRoutes.get("/", postController.getPostController);
+
+postRoutes.get("/details/:postId", postController.getPostDetailController);
+
 module.exports = postRoutes;
