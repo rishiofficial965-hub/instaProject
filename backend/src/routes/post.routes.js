@@ -3,15 +3,21 @@ const postController = require("../controllers/post.controllers");
 const postRoutes = express.Router();
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
+const identifyUser = require("../middleware/auth.middleware");
 
 postRoutes.post(
   "/",
   upload.single("image"),
+  identifyUser,
   postController.createPostController,
 );
 
-postRoutes.get("/", postController.getPostController);
+postRoutes.get("/", identifyUser, postController.getPostController);
 
-postRoutes.get("/details/:postId", postController.getPostDetailController);
+postRoutes.get(
+  "/details/:postId",
+  identifyUser,
+  postController.getPostDetailController,
+);
 
 module.exports = postRoutes;
