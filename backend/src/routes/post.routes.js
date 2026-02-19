@@ -20,4 +20,6 @@ postRoutes.get(
   postController.getPostDetailController,
 );
 
+postRoutes.post("/like/:postId",identifyUser,postController.likePostController)
+
 module.exports = postRoutes;
