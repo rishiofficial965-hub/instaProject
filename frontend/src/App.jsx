@@ -1,9 +1,19 @@
-import React from 'react'
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import LoginForm from "./features/auth/pages/LoginForm";
+import RegistrationForm from "./features/auth/pages/RegistrationForm";
 
-const App = () => {
-  return (
-    <div>App</div>
-  )
+const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <LoginForm />,
+  },
+  {
+    path: "/register",
+    element: <RegistrationForm />,
+  },
+]);
+
+export default function App() {
+  return <RouterProvider router={router} />;
 }
 
-export default App

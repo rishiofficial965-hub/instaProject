@@ -1,16 +1,22 @@
-const express = require("express")
-const cookieParser = require("cookie-parser")
-const app = express()
-const authRouter = require("./routes/auth.routes")
-const postRoutes = require("./routes/post.routes")
-const userRouter = require("./routes/user.routes")
-app.use(express.json())
-app.use(cookieParser())
+const express = require("express");
+const cookieParser = require("cookie-parser");
 
-app.use("/api/auth",authRouter)
-app.use("/api/post",postRoutes)
-app.use("/api/users",userRouter)
+const cors = require("cors");
+const app = express();
+const authRouter = require("./routes/auth.routes");
+const postRoutes = require("./routes/post.routes");
+const userRouter = require("./routes/user.routes");
+app.use(express.json());
+app.use(cookieParser());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:5173",
+  }),
+);
 
+app.use("/api/auth", authRouter);
+app.use("/api/post", postRoutes);
+app.use("/api/users", userRouter);
 
-
-module.exports = app 
+module.exports = app;
