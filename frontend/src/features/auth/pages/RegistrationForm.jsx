@@ -1,29 +1,23 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const RegistrationForm = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [eyetoggle, setEyetoggle] = useState(true);
+  const navigate = useNavigate()
 
+  const { handleRegister } = useAuth();
   async function handleSubmit(e) {
     e.preventDefault();
 
-    await axios
-      .post(
-        "http://localhost:3000/api/auth/register",
-        {
-          username,
-          email,
-          password,
-        },
-        { withCredentials: true },
-      )
-      .then((res) => {
-        console.log(res.data);
-      });
+    handleRegister(username, email, password).then((res) => {
+      console.log(res);
+      navigate("/")
+    });
+
     setUsername("");
     setEmail("");
     setPassword("");
@@ -89,9 +83,9 @@ const RegistrationForm = () => {
             >
               <div className="text-black/80 text-md">
                 {eyetoggle ? (
-                  <i class="fa-solid fa-eye-slash"></i>
+                  <i className="fa-solid fa-eye-slash"></i>
                 ) : (
-                  <i class="fa-solid fa-eye"></i>
+                  <i className="fa-solid fa-eye"></i>
                 )}
               </div>
             </div>

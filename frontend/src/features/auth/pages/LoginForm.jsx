@@ -1,28 +1,22 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.js";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [eyetoggle, setEyetoggle] = useState(true);
+  const navigate = useNavigate()
 
+  const { handleLogin, loading } = useAuth();
+
+  if (loading) return <h1>loading....</h1>;
   async function handleSubmit(e) {
     e.preventDefault();
-
-    await axios
-      .post(
-        "http://localhost:3000/api/auth/login",
-        {
-          username,
-          password,
-        },
-        { withCredentials: true },
-      )
-      .then((res) => {
-        console.log(res.data);
-      });
-    setUsername("");
+    handleLogin(username, password).then((res) => {
+      console.log(res);
+      navigate("/")
+    });
     setPassword("");
   }
   return (
@@ -75,9 +69,9 @@ const LoginForm = () => {
             >
               <div className="text-black/80 text-md">
                 {eyetoggle ? (
-                  <i class="fa-solid fa-eye-slash"></i>
+                  <i className="fa-solid fa-eye-slash"></i>
                 ) : (
-                  <i class="fa-solid fa-eye"></i>
+                  <i className="fa-solid fa-eye"></i>
                 )}
               </div>
             </div>

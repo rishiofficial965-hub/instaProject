@@ -33,7 +33,7 @@ async function getPostController(req, res) {
   const post = await postModel.find({
     user: userId,
   });
-  res.status(201).json({
+  res.status(200).json({
     message: "post fetched successfully",
     post,
   });
