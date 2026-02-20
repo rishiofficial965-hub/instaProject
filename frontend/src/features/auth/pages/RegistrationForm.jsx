@@ -6,6 +6,7 @@ const RegistrationForm = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [eyetoggle, setEyetoggle] = useState(true);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -28,13 +29,26 @@ const RegistrationForm = () => {
     setPassword("");
   }
   return (
-    <main className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
-      <div className="backdrop-blur-xl bg-white/10 border border-white/20 px-12 py-18 rounded-2xl shadow-2xl flex flex-col justify-center items-center gap-6">
-        <h1 className="text-3xl font-bold text-red-900 drop-shadow-lg">
-          Register
-        </h1>
+    <main className="flex justify-center items-center h-screen bg-[#e6eff7]">
+      <div
+        className="
+      bg-white/30
+      backdrop-blur-2xl
+      shadow-[0_8px_32px_rgba(31,38,135,0.37)]
+      border border-black/20
+      rounded-2xl
+      p-10
+      flex flex-col
+      items-center
+      gap-6
+    "
+      >
+        <div className="flex justify-center items-center font-bold text-red-900 drop-shadow-lg gap-2 pr-4">
+          <i  className="fa-solid fa-person-circle-plus text-2xl"></i>
+          <h1  className="text-3xl">Register</h1>
+        </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-72">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-72 ">
           <input
             onInput={(e) => {
               setUsername(e.target.value);
@@ -43,7 +57,7 @@ const RegistrationForm = () => {
             type="text"
             name="username"
             placeholder="Enter username"
-            className="bg-white/20 text-white placeholder-gray-300 px-4 py-3 rounded-lg focus:outline-none border border-white/30 focus:border-white/70 backdrop-blur-md"
+            className="bg-white/20 text-black/80 font-medium placeholder-gray-300 px-4 py-3 rounded-lg focus:outline-none border border-black/30 backdrop-blur-md"
           />
           <input
             onInput={(e) => {
@@ -53,19 +67,35 @@ const RegistrationForm = () => {
             type="email"
             name="email"
             placeholder="Enter email address"
-            className="bg-white/20 text-white placeholder-gray-300 px-4 py-3 rounded-lg focus:outline-none border border-white/30 focus:border-white/70 backdrop-blur-md"
+            className="bg-white/20 text-black/80 font-medium  placeholder-gray-300 px-4 py-3 rounded-lg focus:outline-none border border-black/30 backdrop-blur-md"
           />
 
-          <input
-            onInput={(e) => {
-              setPassword(e.target.value);
-            }}
-            value={password}
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            className="bg-white/20 text-white placeholder-gray-300 px-4 py-3 rounded-lg focus:outline-none border border-white/30 focus:border-white/70 backdrop-blur-md"
-          />
+          <div className="relative w-full">
+            <input
+              onInput={(e) => {
+                setPassword(e.target.value);
+              }}
+              value={password}
+              type={eyetoggle ? "password" : "text"}
+              name="password"
+              placeholder="Enter password"
+              className="bg-white/20 w-full text-black/80 font-medium  placeholder-gray-300 px-4 py-3 rounded-lg focus:outline-none border border-black/30 backdrop-blur-md"
+            />
+            <div
+              onClick={() => {
+                setEyetoggle(!eyetoggle);
+              }}
+              className="absolute right-3 top-3 cursor-pointer"
+            >
+              <div className="text-black/80 text-md">
+                {eyetoggle ? (
+                  <i class="fa-solid fa-eye-slash"></i>
+                ) : (
+                  <i class="fa-solid fa-eye"></i>
+                )}
+              </div>
+            </div>
+          </div>
 
           <button
             type="submit"
@@ -74,7 +104,7 @@ const RegistrationForm = () => {
             Register
           </button>
         </form>
-        <p>
+        <p className="text-black/80 font-medium">
           Already have an account ?{" "}
           <Link className="text-green-900 font-bold" to="/login">
             login

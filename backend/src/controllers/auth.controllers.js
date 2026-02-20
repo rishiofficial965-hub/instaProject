@@ -10,7 +10,7 @@ async function registerHandler(req, res) {
   });
 
   if (isUserAlreadyExists)
-    return res.send(409).json({
+    return res.status(409).json({
       message:
         isUserAlreadyExists.email == email
           ? "Email already exists"
@@ -59,7 +59,7 @@ async function loginHandler(req, res) {
   const isPasswordValid = await bcrypt.compare(password,user.password)
 
   if (!isPasswordValid) {
-    return res.send(401).json({
+    return res.status(401).json({
       message: "password invalid..",
     });
   }
