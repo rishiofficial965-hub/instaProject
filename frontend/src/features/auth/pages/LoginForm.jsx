@@ -6,17 +6,25 @@ const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [eyetoggle, setEyetoggle] = useState(true);
-  const navigate = useNavigate()
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const { handleLogin, loading } = useAuth();
 
   if (loading) return <h1>loading....</h1>;
   async function handleSubmit(e) {
     e.preventDefault();
-    handleLogin(username, password).then((res) => {
-      console.log(res);
-      navigate("/")
-    });
+
+    const result = await handleLogin(username, password);
+
+    if (!result.success) {
+      setError(result.error);
+      setPassword("");
+      return;
+    }
+
+    navigate("/");
+    setUsername("");
     setPassword("");
   }
   return (
@@ -38,10 +46,12 @@ const LoginForm = () => {
           <i className="text-3xl pt-1 fa-solid fa-arrow-right-to-bracket"></i>
           <h1 className="text-3xl">Login</h1>
         </div>
+        
+        {error && <p className="text-red-700 font-semibold">{error}</p>}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-72">
           <input
-            onInput={(e) => {
+            onChange={(e) => {
               setUsername(e.target.value);
             }}
             value={username}
@@ -52,7 +62,7 @@ const LoginForm = () => {
           />
           <div className="relative w-full">
             <input
-              onInput={(e) => {
+              onChange={(e) => {
                 setPassword(e.target.value);
               }}
               value={password}

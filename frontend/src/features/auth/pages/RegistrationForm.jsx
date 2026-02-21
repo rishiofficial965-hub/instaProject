@@ -7,17 +7,14 @@ const RegistrationForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [eyetoggle, setEyetoggle] = useState(true);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { handleRegister } = useAuth();
+  const { handleRegister, loading } = useAuth();
   async function handleSubmit(e) {
     e.preventDefault();
-
-    handleRegister(username, email, password).then((res) => {
-      console.log(res);
-      navigate("/")
-    });
-
+    const res = await handleRegister(username, email, password);
+    console.log(res);
+    navigate("/");
     setUsername("");
     setEmail("");
     setPassword("");
@@ -38,13 +35,16 @@ const RegistrationForm = () => {
     "
       >
         <div className="flex justify-center items-center font-bold text-red-900 drop-shadow-lg gap-2 pr-4">
-          <i  className="fa-solid fa-person-circle-plus text-2xl"></i>
-          <h1  className="text-3xl">Register</h1>
+          <i className="fa-solid fa-person-circle-plus text-2xl"></i>
+          <h1 className="text-3xl">Register</h1>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-72 ">
+          {loading && (
+            <h1 className="text-lg font-semibold text-red-800">Loading...</h1>
+          )}
           <input
-            onInput={(e) => {
+            onChange={(e) => {
               setUsername(e.target.value);
             }}
             value={username}
@@ -54,7 +54,7 @@ const RegistrationForm = () => {
             className="bg-white/20 text-black/80 font-medium placeholder-gray-300 px-4 py-3 rounded-lg focus:outline-none border border-black/30 backdrop-blur-md"
           />
           <input
-            onInput={(e) => {
+            onChange={(e) => {
               setEmail(e.target.value);
             }}
             value={email}
@@ -66,7 +66,7 @@ const RegistrationForm = () => {
 
           <div className="relative w-full">
             <input
-              onInput={(e) => {
+              onChange={(e) => {
                 setPassword(e.target.value);
               }}
               value={password}

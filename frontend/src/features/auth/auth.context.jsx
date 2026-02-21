@@ -1,34 +1,42 @@
-import {  useState } from "react";
-import { createContext } from "react";   // FIXED
+import {  useState, useEffect } from "react";
+import { AuthContext } from "./AuthContext"; 
 import { getMe, login, register } from "./services/auth.api";
 
-export const AuthContext = createContext();
-
+//same func check once
+//not verified
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    handleGetMe();
+  }, []);
+
   const handleLogin = async (username, password) => {
-    setLoading(true);
-    try {
-      const response = await login(username, password);
-      setUser(response);
-      return response;
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    const userData = await login(username, password);
+    setUser(userData);
+    return { success: true, data: userData };
+  } catch (err) {
+    return {
+      success: false,
+      error: err.response?.data?.message || "Invalid username or password"
+    };
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleRegister = async (username, email, password) => {
     setLoading(true);
     try {
-      const response = await register(username, email, password);
-      setUser(response);
-      return response;
+      const userData = await register(username, email, password);
+      setUser(userData);
+      return userData;
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -37,11 +45,12 @@ export function AuthProvider({ children }) {
   const handleGetMe = async () => {
     setLoading(true);
     try {
-      const response = await getMe();
-      setUser(response);
-      return response;
+      const userData = await getMe();
+      setUser(userData);
+      return userData;
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -51,7 +60,9 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         loading,
+        setLoading,
         handleLogin,
         handleRegister,
         handleGetMe,

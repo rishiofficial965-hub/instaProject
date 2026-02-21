@@ -31,6 +31,7 @@ export async function login(username, password) {
     throw err;
   }
 }
+
 export async function getMe() {
   try {
     const response = await api.get("/get-me");
