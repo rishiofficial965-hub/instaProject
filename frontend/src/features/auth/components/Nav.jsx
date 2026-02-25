@@ -7,7 +7,6 @@ const Nav = () => {
 
   return (
     <nav className="absolute top-8 left-1/2 -translate-x-1/2 w-[90%] max-w-5xl bg-white/40 backdrop-blur-3xl rounded-full px-8 py-3 flex items-center justify-between shadow-[0_4px_15px_rgba(0,0,0,0.1)] border border-white/40 z-50">
-      {/* Logo Area */}
       <Link to="/" className="flex items-center gap-2 cursor-pointer">
         <div className="text-red-900 text-[28px] leading-none drop-shadow-md mt-1">
           <i className="fa-brands fa-instagram"></i>
@@ -20,10 +19,8 @@ const Nav = () => {
         </span>
       </Link>
 
-      {/* Spacer to keep balance if needed, or left empty */}
       <div className="flex-1"></div>
 
-      {/* Right side icon grouping to balance */}
       <div className="flex justify-end gap-6 text-[#3a4454] text-[22px] px-2">
         {isLoginPage ? (
           <Link to="/register" className="hover:text-red-900 transition flex items-center" title="Sign Up">

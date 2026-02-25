@@ -5,32 +5,27 @@ const Post = ({ user, post }) => {
 
   return (
     <>
-      {/* Single Post */}
-      <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
-        {/* User Row */}
-        <div className="flex items-center gap-3 px-4 pt-3">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+        <div className="flex items-center gap-3 px-4 py-3">
           <div className="p-[2px] rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600">
-            <div
-              className="cursor-pointer rounded-full bg-white 
-              p-[2px]"
-            >
+            <div className="cursor-pointer rounded-full bg-white p-[2px]">
               <img
-                className="w-10 h-10 rounded-full object-cover "
+                className="w-10 h-10 rounded-full object-cover"
                 src={user?.profileImage || "https://via.placeholder.com/150"}
                 alt="profile"
               />
             </div>
           </div>
-          <p className="cursor-pointer font-semibold text-gray-800">
+          <p className="cursor-pointer font-semibold text-gray-800 text-sm">
             {user?.username || "Unknown User"}
           </p>
+          <i className="fa-solid fa-ellipsis ml-auto text-gray-500 cursor-pointer"></i>
         </div>
 
-        {/* Post Image */}
         <img
           src={post.imgUrl}
           alt="post"
-          className="w-full py-2 max-h-[550px] object-cover"
+          className="w-full max-h-[600px] object-cover"
         />
         <div className="flex justify-between px-5 py-1 text-black">
           <div className="flex gap-4">
@@ -51,14 +46,12 @@ const Post = ({ user, post }) => {
           </div>
         </div>
 
-        {/* Like Count */}
         <div className="px-6 py-1">
           <p className="font-semibold text-sm text-gray-800">
             {post.likeCount || 0} likes
           </p>
         </div>
 
-        {/* Bottom caption */}
         <div className="px-6 py-2 pb-4">
           <p className="font-semibold text-gray-800">
             {user?.username || "Unknown User"}

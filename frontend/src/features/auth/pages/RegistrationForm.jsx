@@ -11,7 +11,12 @@ const RegistrationForm = () => {
   const navigate = useNavigate();
 
   const { handleRegister, loading } = useAuth();
-  if (loading) return <h1>loading....</h1>;
+  if (loading) return (<main className="min-h-screen w-full bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <i className="fa-brands fa-instagram text-4xl text-gray-400 animate-pulse mb-4"></i>
+          <p className="text-gray-500 font-medium tracking-wide">Loading feed...</p>
+        </div>
+      </main>)
   async function handleSubmit(e) {
     e.preventDefault();
     const res = await handleRegister(username, email, password);

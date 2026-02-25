@@ -81,14 +81,12 @@ async function likePostController(req, res) {
     });
 
     if (existingLike) {
-      // Toggle off (unlike)
       await likeModel.deleteOne({ _id: existingLike._id });
       return res.status(200).json({
         message: "unliked successfully",
         isLiked: false,
       });
     } else {
-      // Toggle on (like)
       const like = await likeModel.create({
         post: postId,
         user: username,

@@ -22,7 +22,6 @@ export const usePost = () => {
     try {
       const response = await likePost(postId);
       
-      // Update feed locally rather than refreshing the whole feed
       setFeed((prevFeed) =>
         prevFeed.map((p) => {
           if (p._id === postId) {
