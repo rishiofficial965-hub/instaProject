@@ -63,27 +63,82 @@ async function getPostDetailController(req, res) {
 }
 
 async function likePostController(req, res) {
-  const username = req.user.username;
-  const postId = req.params.postId;
+  try {
+    const username = req.user.username;
+    const postId = req.params.postId;
 
-  const post = await postModel.findById(postId);
+    const post = await postModel.findById(postId);
 
-  if (!post)
-    return res.status(404).json({
-      message: "Post not found",
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    const existingLike = await likeModel.findOne({
+      post: postId,
+      user: username,
     });
-  const like = await likeModel.create({
-    post: postId,
-    user: username,
-  });
-  res.status(200).json({
-    message: "liked successfully",
-    like,
-  });
+
+    if (existingLike) {
+      // Toggle off (unlike)
+      await likeModel.deleteOne({ _id: existingLike._id });
+      return res.status(200).json({
+        message: "unliked successfully",
+        isLiked: false,
+      });
+    } else {
+      // Toggle on (like)
+      const like = await likeModel.create({
+        post: postId,
+        user: username,
+      });
+      return res.status(200).json({
+        message: "liked successfully",
+        isLiked: true,
+        like,
+      });
+    }
+  } catch (err) {
+    console.error("Like error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 }
+
+async function getFeedController(req, res) {
+  try {
+    const posts = await postModel.find().populate("user").lean();
+    
+    const enrichedPosts = await Promise.all(
+      posts.map(async (post) => {
+        const likeCount = await likeModel.countDocuments({ post: post._id });
+        const isLiked = await likeModel.findOne({
+          user: req.user.username,
+          post: post._id,
+        });
+
+        return {
+          ...post,
+          likeCount,
+          isLiked: !!isLiked,
+        };
+      })
+    );
+
+    res.status(200).json({
+      message: "post fetched successfully",
+      posts: enrichedPosts,
+    });
+  } catch (err) {
+    console.error("Feed error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
   createPostController,
   getPostController,
   getPostDetailController,
   likePostController,
+  getFeedController,
 };

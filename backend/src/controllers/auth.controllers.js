@@ -60,9 +60,12 @@ async function registerHandler(req, res) {
 async function loginHandler(req, res) {
   try {
     const { username, email, password } = req.body;
-    const user = await userModel.findOne({
-      $or: [{ email: email }, { username: username }],
-    });
+    const user = await userModel
+      .findOne({
+        $or: [{ email: email }, { username: username }],
+      })
+      .select("+password");
+
     if (!user)
       return res.status(404).json({
         message: "user not found",

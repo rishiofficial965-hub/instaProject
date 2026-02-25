@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
+import Nav from "../components/Nav";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -28,7 +29,8 @@ const LoginForm = () => {
     setPassword("");
   }
   return (
-    <main className="flex justify-center items-center h-screen bg-[#e6eff7]">
+    <main className="relative flex justify-center items-center h-screen bg-[#e6eff7]">
+      <Nav />
       <div
         className="
       bg-white/30

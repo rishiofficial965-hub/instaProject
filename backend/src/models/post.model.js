@@ -10,7 +10,7 @@ const modelSchema = new mongoose.Schema({
         required:[true,"imgUrl is required"]
     },
     user:{
-        ref:"users",
+        ref:"user",
         type: mongoose.Schema.Types.ObjectId,
         required:[true,"userId id required"]
     }

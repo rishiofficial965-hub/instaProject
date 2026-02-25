@@ -22,4 +22,6 @@ postRoutes.get(
 
 postRoutes.post("/like/:postId",identifyUser,postController.likePostController)
 
+postRoutes.get("/feed",identifyUser,postController.getFeedController)
+
 module.exports = postRoutes;

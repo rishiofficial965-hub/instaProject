@@ -1,9 +1,8 @@
 import {  useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext"; 
-import { getMe, login, register } from "./services/auth.api";
+import { getMe, login, register } from "../services/auth.api";
 
-//same func check once
-//not verified
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);

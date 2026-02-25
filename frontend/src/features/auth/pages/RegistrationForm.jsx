@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import Nav from "../components/Nav";
 
 const RegistrationForm = () => {
   const [username, setUsername] = useState("");
@@ -10,17 +11,19 @@ const RegistrationForm = () => {
   const navigate = useNavigate();
 
   const { handleRegister, loading } = useAuth();
+  if (loading) return <h1>loading....</h1>;
   async function handleSubmit(e) {
     e.preventDefault();
     const res = await handleRegister(username, email, password);
     console.log(res);
-    navigate("/");
+    navigate("/"); 
     setUsername("");
     setEmail("");
     setPassword("");
   }
   return (
-    <main className="flex justify-center items-center h-screen bg-[#e6eff7]">
+    <main className="relative flex justify-center items-center h-screen bg-[#e6eff7]">
+      <Nav />
       <div
         className="
       bg-white/30
