@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import { getfeed, likePost } from "../services/post.api";
+import { getfeed, likePost, createPost, getUserPosts } from "../services/post.api";
 import { PostContext } from "../postContext";
 
 export const usePost = () => {
   const context = useContext(PostContext);
-  const { loading, setLoading, post, feed, setFeed } = context;
+  const { loading, setLoading, post, feed, setFeed, userPosts, setUserPosts } = context;
 
   const handleGetFeed = async () => {
     try {
@@ -40,5 +40,49 @@ export const usePost = () => {
     }
   };
 
-  return { loading, feed, post, handleGetFeed, handleToggleLike };
+  const handleCreatePost = async () => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("image", context.imageFile);
+      formData.append("caption", context.caption);
+
+      await createPost(formData);
+      
+      
+      context.setImagePreview(null);
+      context.setImageFile(null);
+      context.setCaption("");
+      
+      return true;
+    } catch (error) {
+      console.error("Error creating post:", error);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGetUserPosts = async () => {
+    try {
+      setLoading(true);
+      const data = await getUserPosts();
+      setUserPosts(data.post);
+    } catch (error) {
+      console.error("Error fetching user posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { 
+    loading, 
+    feed, 
+    post, 
+    userPosts,
+    handleGetFeed, 
+    handleToggleLike, 
+    handleCreatePost,
+    handleGetUserPosts
+  };
 };

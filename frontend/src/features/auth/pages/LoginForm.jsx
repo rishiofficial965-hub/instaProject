@@ -29,7 +29,7 @@ const LoginForm = () => {
       return;
     }
 
-    navigate("/");
+    navigate("/home");
     setUsername("");
     setPassword("");
   }

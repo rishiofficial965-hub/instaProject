@@ -9,11 +9,12 @@ async function followUserController(req, res) {
       message: "you cannot follow yourself",
     });
 
-  const isFolloweeExist = await followModel.findOne({
+  const userModel = require("../models/user.model");
+  const isUserExist = await userModel.findOne({
     username: followeeUsername,
   });
 
-  if (!isFolloweeExist)
+  if (!isUserExist)
     return res.status(404).json({
       message: "User you are trying to follow does not exist",
     });
@@ -95,8 +96,8 @@ async function unfollowUserController(req, res) {
   });
 
   if (!isFollowing)
-    res.status(200).json({
-      message: `You are not following ${followerUsername}`,
+    return res.status(200).json({
+      message: `You are not following ${followeeUsername}`,
     });
 
   await followModel.findByIdAndDelete(isFollowing._id);

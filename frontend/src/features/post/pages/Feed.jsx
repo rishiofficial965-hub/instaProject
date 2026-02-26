@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import Post from "../components/Post";
 import { usePost } from "../hook/usePost";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import SideBar from "../components/SideBar";
 
 const Feed = () => {
   const { feed, handleGetFeed, loading } = usePost();
-  
-  useEffect(() => {
+  const navigate = useNavigate();
+  useEffect(() => { 
     handleGetFeed();
   }, []);
 
@@ -22,7 +23,8 @@ const Feed = () => {
   }
 
   return (
-    <main className="min-h-screen w-full bg-gray-50 flex flex-col items-center pb-20">
+    <main className="relative min-h-screen w-full bg-gray-50 flex flex-col items-center pb-20">
+      <SideBar />
       <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200">
         <div className="max-w-lg mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center cursor-pointer mt-1">
@@ -34,13 +36,14 @@ const Feed = () => {
             </span>
           </Link>
           <div className="flex gap-5 text-[22px] text-gray-800 mt-1">
-            <i className="fa-regular fa-square-plus cursor-pointer hover:text-gray-500 transition"></i>
+            <i className="fa-regular fa-square-plus cursor-pointer hover:text-gray-500 transition" onClick={() => navigate("/addPost")}></i>
             <i className="fa-regular fa-heart cursor-pointer hover:text-gray-500 transition"></i>
             <i className="fa-brands fa-facebook-messenger cursor-pointer hover:text-gray-500 transition"></i>
           </div>
         </div>
       </header>
 
+    <div className="relative flex">
       <div className="w-full max-w-lg mx-auto pt-6 px-4 py-8">
         {feed.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm p-10 text-center border border-gray-200 mt-8">
@@ -57,6 +60,7 @@ const Feed = () => {
             <Post key={postItem._id} user={postItem.user} post={postItem} />
           ))
         )}
+      </div>
       </div>
     </main>
   );

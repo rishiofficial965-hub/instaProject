@@ -11,8 +11,11 @@ const Post = ({ user, post }) => {
             <div className="cursor-pointer rounded-full bg-white p-[2px]">
               <img
                 className="w-10 h-10 rounded-full object-cover"
-                src={user?.profileImage || "https://via.placeholder.com/150"}
+                src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.username || 'User'}&background=random`}
                 alt="profile"
+                onError={(e) => {
+                  e.target.src = "https://www.w3schools.com/howto/img_avatar.png";
+                }}
               />
             </div>
           </div>

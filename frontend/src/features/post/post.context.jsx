@@ -5,6 +5,11 @@ export const PostContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [post, setPost] = useState(null);
   const [feed, setFeed] = useState([]); 
+  
+  const [imagePreview, setImagePreview] = useState(null);
+  const [caption, setCaption] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [userPosts, setUserPosts] = useState([]);
 
   return (
     <PostContext.Provider
@@ -15,6 +20,14 @@ export const PostContextProvider = ({ children }) => {
         setPost,
         feed,
         setFeed,
+        userPosts,
+        setUserPosts,
+        imagePreview,
+        setImagePreview,
+        caption,
+        setCaption,
+        imageFile,
+        setImageFile,
       }}
     >
       {children}

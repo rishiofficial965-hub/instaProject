@@ -21,7 +21,7 @@ const RegistrationForm = () => {
     e.preventDefault();
     const res = await handleRegister(username, email, password);
     console.log(res);
-    navigate("/"); 
+    navigate("/home"); 
     setUsername("");
     setEmail("");
     setPassword("");

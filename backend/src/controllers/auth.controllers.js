@@ -107,10 +107,18 @@ async function loginHandler(req, res) {
     });
   }
 }
+const postModel = require("../models/post.model");
+const followModel = require("../models/follow.model");
+
 async function getMeController(req, res) {
   const userId = req.user.id;
+  const username = req.user.username;
 
   const user = await userModel.findById(userId);
+  
+  const postCount = await postModel.countDocuments({ user: userId });
+  const followersCount = await followModel.countDocuments({ followee: username, status: "accepted" });
+  const followingCount = await followModel.countDocuments({ follower: username, status: "accepted" });
 
   res.status(200).json({
     user: {
@@ -118,6 +126,11 @@ async function getMeController(req, res) {
       email: user.email,
       bio: user.bio,
       profileImage: user.profileImage,
+      stats: {
+        postCount,
+        followersCount,
+        followingCount,
+      },
     },
   });
 }

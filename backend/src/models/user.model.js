@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   profileImage: {
     type: String,
     default:
-      "https://ik.imagekit.io/871jjxomz/account-icon-user-icon-vector-graphics_292645-552.avif",
+      "https://www.w3schools.com/howto/img_avatar.png",
   },
 });
 
