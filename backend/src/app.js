@@ -24,7 +24,7 @@ app.use("/api/users", userRouter);
 app.use(express.static(path.join(__dirname, "../public")));
 
 // Catch-all route to serve index.html for SPA
-app.get("/(.*)", (req, res) => {
+app.get(/^\/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "../public", "index.html"));
 });
 

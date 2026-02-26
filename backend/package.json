@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd ../frontend && npm install && npm run build && npx shx rm -rf ../backend/public && npx shx mv dist ../backend/public",
+    "build": "cd ../frontend && npm install && npm run build && shx rm -rf ../backend/public && shx mv dist ../backend/public",
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
@@ -24,6 +24,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.0",
     "multer": "^2.0.2",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "shx": "^0.3.4"
   }
 }
