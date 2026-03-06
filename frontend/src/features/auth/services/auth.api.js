@@ -5,6 +5,8 @@ const api = axios.create({
   withCredentials: true,
 });
 
+axios.defaults.withCredentials = true;
+
 export async function register(username, email, password) {
   try {
     const response = await api.post("/auth/register", {
@@ -39,6 +41,24 @@ export async function getMe() {
     
   } catch (err) {
     console.error("GetMe error:", err);
+    throw err;
+  }
+}
+export async function updateProfile(profileData) {
+  try {
+    const isFormData = profileData instanceof FormData;
+    const response = await api.patch("/users/profile", profileData, {
+      headers: {
+        "Content-Type": isFormData ? "multipart/form-data" : "application/json",
+      },
+    });
+    return response.data.user;
+  } catch (err) {
+    console.error("Update profile API error details:", {
+      status: err.response?.status,
+      data: err.response?.data,
+      message: err.message
+    });
     throw err;
   }
 }

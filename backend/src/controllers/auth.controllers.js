@@ -42,6 +42,7 @@ async function registerHandler(req, res) {
     res.status(201).json({
       message: "user created successfully",
       user: {
+        _id: user._id,
         username: user.username,
         email: user.email,
         bio: user.bio,
@@ -93,6 +94,7 @@ async function loginHandler(req, res) {
     res.status(201).json({
       message: "login successfully",
       user: {
+        _id: user._id,
         username: user.username,
         email: user.email,
         bio: user.bio,
@@ -117,14 +119,16 @@ async function getMeController(req, res) {
   const user = await userModel.findById(userId);
   
   const postCount = await postModel.countDocuments({ user: userId });
-  const followersCount = await followModel.countDocuments({ followee: username, status: "accepted" });
-  const followingCount = await followModel.countDocuments({ follower: username, status: "accepted" });
+  const followersCount = await followModel.countDocuments({ followee: userId, status: "accepted" });
+  const followingCount = await followModel.countDocuments({ follower: userId, status: "accepted" });
 
   res.status(200).json({
     user: {
+      _id: user._id,
       username: user.username,
       email: user.email,
       bio: user.bio,
+      fullName: user.fullName,
       profileImage: user.profileImage,
       stats: {
         postCount,

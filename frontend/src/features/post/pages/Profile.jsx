@@ -2,15 +2,29 @@ import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../../auth/context/AuthContext";
 import { usePost } from "../hook/usePost";
 import SideBar from "../components/SideBar";
+import EditPop from "../../user/components/EditPop";
 
 const Profile = () => {
     const { user, handleGetMe } = useContext(AuthContext);
     const { userPosts, handleGetUserPosts, loading } = usePost();
 
+    const [isEditOpen, setIsEditOpen] = React.useState(false);
+    const fileInputRef = React.useRef(null);
+    const { handleUpdateProfile } = useContext(AuthContext);
+
     useEffect(() => {
         handleGetMe();
         handleGetUserPosts();
     }, []);
+
+    const handleImageChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append("image", file);
+            await handleUpdateProfile(formData);
+        }
+    };
 
     const stats = [
         { label: "posts", count: user?.stats?.postCount || 0 },
@@ -24,7 +38,7 @@ const Profile = () => {
             
             <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200">
                 <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-                    <h1 className="text-xl font-bold text-gray-900 ml-20 lg:ml-0">{user?.username || "Profile"}</h1>
+                    <h1 className="text-xl font-bold text-gray-900 ml-20 lg:ml-0">{user?.fullName || user?.username || "Profile"}</h1>
                     <div className="flex gap-4">
                         <i className="fa-solid fa-gear text-xl text-gray-700 cursor-pointer"></i>
                     </div>
@@ -45,15 +59,31 @@ const Profile = () => {
                                         e.target.src = "https://www.w3schools.com/howto/img_avatar.png";
                                     }}
                                 />
+                                <div 
+                                    onClick={() => fileInputRef.current.click()}
+                                    className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-lg border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
+                                >
+                                    <i className="fa-solid fa-camera text-gray-700 text-sm"></i>
+                                </div>
+                                <input 
+                                    type="file" 
+                                    ref={fileInputRef} 
+                                    className="hidden" 
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                />
                             </div>
                         </div>
                     </div>
 
                     <div className="flex-1 flex flex-col gap-6 text-center md:text-left">
                         <div className="flex flex-col md:flex-row items-center gap-4">
-                            <h2 className="text-2xl font-light">{user?.username || "username"}</h2>
+                            <h2 className="text-2xl font-light text-gray-900">{user?.fullName || user?.username || "username"}</h2>
                             <div className="flex gap-2">
-                                <button className="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg text-sm font-semibold transition-colors">
+                                <button 
+                                    onClick={() => setIsEditOpen(true)}
+                                    className="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg text-sm font-semibold transition-colors"
+                                >
                                     Edit Profile
                                 </button>
                                 <button className="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg text-sm font-semibold transition-colors">
@@ -72,8 +102,8 @@ const Profile = () => {
                         </div>
 
                         <div className="max-w-md">
-                            <p className="font-semibold text-sm">{user?.username}</p>
-                            <p className="text-sm text-gray-700 mt-1 whitespace-pre-line">
+                            <p className="font-semibold text-sm text-gray-900">{user?.fullName || user?.username}</p>
+                            <p className="text-sm text-gray-800 mt-1 whitespace-pre-line">
                                 {user?.bio || "No bio yet."}
                             </p>
                         </div>
@@ -134,6 +164,7 @@ const Profile = () => {
                     </div>
                 )}
             </div>
+            <EditPop isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
         </main>
     );
 };

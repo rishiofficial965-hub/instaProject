@@ -49,7 +49,7 @@ async function getPostDetailController(req, res) {
       message: "post not found",
     });
 
-  const isValiduser = post.user == userId;
+  const isValiduser = post.user.equals(userId);
 
   if (!isValiduser)
     return res.status(403).json({
@@ -77,7 +77,7 @@ async function likePostController(req, res) {
 
     const existingLike = await likeModel.findOne({
       post: postId,
-      user: username,
+      user: req.user.id,
     });
 
     if (existingLike) {
@@ -89,7 +89,7 @@ async function likePostController(req, res) {
     } else {
       const like = await likeModel.create({
         post: postId,
-        user: username,
+        user: req.user.id,
       });
       return res.status(200).json({
         message: "liked successfully",
@@ -111,7 +111,7 @@ async function getFeedController(req, res) {
       posts.map(async (post) => {
         const likeCount = await likeModel.countDocuments({ post: post._id });
         const isLiked = await likeModel.findOne({
-          user: req.user.username,
+          user: req.user.id,
           post: post._id,
         });
 
@@ -133,10 +133,40 @@ async function getFeedController(req, res) {
   }
 }
 
+async function deletePostController(req, res) {
+  console.log("Delete post request received:", { postId: req.params.postId, userId: req.user.id });
+  try {
+    const postId = req.params.postId;
+    const userId = req.user.id;
+
+    const post = await postModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Verify ownership
+    if (post.user.toString() !== userId) {
+      return res.status(403).json({ message: "You are not authorized to delete this post" });
+    }
+
+    await postModel.findByIdAndDelete(postId);
+    
+    // Also delete associated likes
+    await likeModel.deleteMany({ post: postId });
+
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (err) {
+    console.error("Delete post error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
   createPostController,
   getPostController,
   getPostDetailController,
   likePostController,
   getFeedController,
+  deletePostController,
 };

@@ -33,3 +33,8 @@ export async function getPostDetail(postId) {
   const response = await api.get(`/post/details/${postId}`);
   return response.data;
 }
+
+export async function deletePost(postId) {
+  const response = await api.delete(`/post/${postId}`);
+  return response.data;
+}

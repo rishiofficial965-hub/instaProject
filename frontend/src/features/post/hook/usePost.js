@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { getfeed, likePost, createPost, getUserPosts } from "../services/post.api";
+import { getfeed, likePost, createPost, getUserPosts, deletePost } from "../services/post.api";
 import { PostContext } from "../postContext";
 
 export const usePost = () => {
@@ -75,6 +75,25 @@ export const usePost = () => {
     }
   };
 
+  const handleDeletePost = async (postId) => {
+    try {
+      await deletePost(postId);
+      
+      if (feed) {
+        setFeed((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+      }
+      
+      if (userPosts) {
+        setUserPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+      }
+      
+      return true;
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      return false;
+    }
+  };
+
   return { 
     loading, 
     feed, 
@@ -83,6 +102,7 @@ export const usePost = () => {
     handleGetFeed, 
     handleToggleLike, 
     handleCreatePost,
-    handleGetUserPosts
+    handleGetUserPosts,
+    handleDeletePost
   };
 };

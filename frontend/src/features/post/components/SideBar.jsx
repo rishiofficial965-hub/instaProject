@@ -1,13 +1,18 @@
 import React,{useState} from "react";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
+import { AuthContext } from "../../auth/context/AuthContext";
+import { useContext } from "react";
 
 const SideBar = () => {
     const navigate = useNavigate();
     const [toggle, setToggle] = useState(false);
 
+    const { handleLogout: contextLogout } = useContext(AuthContext);
+
     function handleLogout() {
         Cookies.remove("token");
+        if (contextLogout) contextLogout();
         navigate("/login");
     }
 

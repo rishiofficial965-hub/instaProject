@@ -24,4 +24,6 @@ postRoutes.post("/like/:postId",identifyUser,postController.likePostController)
 
 postRoutes.get("/feed",identifyUser,postController.getFeedController)
 
+postRoutes.delete("/:postId", identifyUser, postController.deletePostController);
+
 module.exports = postRoutes;

@@ -1,27 +1,33 @@
 const followModel = require("../models/follow.model");
+const userModel = require("../models/user.model");
+const ImageKit = require("@imagekit/nodejs");
+const { toFile } = require("@imagekit/nodejs");
+
+const imagekit = new ImageKit({
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+});
 
 async function followUserController(req, res) {
-  const followerUsername = req.user.username;
+  const followerId = req.user.id;
   const followeeUsername = req.params.username;
 
-  if (followerUsername == followeeUsername)
-    return res.status(400).json({
-      message: "you cannot follow yourself",
-    });
+  const followee = await userModel.findOne({ username: followeeUsername });
 
-  const userModel = require("../models/user.model");
-  const isUserExist = await userModel.findOne({
-    username: followeeUsername,
-  });
-
-  if (!isUserExist)
+  if (!followee) {
     return res.status(404).json({
       message: "User you are trying to follow does not exist",
     });
+  }
+
+  if (followerId.toString() === followee._id.toString()) {
+    return res.status(400).json({
+      message: "you cannot follow yourself",
+    });
+  }
 
   const isFollowing = await followModel.findOne({
-    follower: followerUsername,
-    followee: followeeUsername,
+    follower: followerId,
+    followee: followee._id,
   });
 
   if (isFollowing) {
@@ -39,8 +45,8 @@ async function followUserController(req, res) {
   }
 
   const followRecord = await followModel.create({
-    follower: followerUsername,
-    followee: followeeUsername,
+    follower: followerId,
+    followee: followee._id,
     status: "pending",
   });
 
@@ -51,7 +57,7 @@ async function followUserController(req, res) {
 }
 
 async function updateFollowStatusController(req, res) {
-  const followeeUsername = req.user.username;
+  const followeeId = req.user.id;
   const { followerUsername, status } = req.body;
 
   if (!["accepted", "rejected"].includes(status)) {
@@ -60,9 +66,14 @@ async function updateFollowStatusController(req, res) {
     });
   }
 
+  const follower = await userModel.findOne({ username: followerUsername });
+  if (!follower) {
+    return res.status(404).json({ message: "Follower not found" });
+  }
+
   const followRequest = await followModel.findOne({
-    follower: followerUsername,
-    followee: followeeUsername,
+    follower: follower._id,
+    followee: followeeId,
   });
 
   if (!followRequest) {
@@ -87,12 +98,17 @@ async function updateFollowStatusController(req, res) {
 }
 
 async function unfollowUserController(req, res) {
-  const followerUsername = req.user.username;
+  const followerId = req.user.id;
   const followeeUsername = req.params.username;
 
+  const followee = await userModel.findOne({ username: followeeUsername });
+  if (!followee) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
   const isFollowing = await followModel.findOne({
-    follower: followerUsername,
-    followee: followeeUsername,
+    follower: followerId,
+    followee: followee._id,
   });
 
   if (!isFollowing)
@@ -107,8 +123,55 @@ async function unfollowUserController(req, res) {
   });
 }
 
+async function updateProfileController(req, res) {
+  const { fullName, bio, profileImage } = req.body || {};
+  const userId = req.user.id;
+
+  console.log("Update profile request:", { userId, body: req.body, hasFile: !!req.file });
+
+  try {
+    const user = await userModel.findById(userId);
+    if (!user) {
+      console.log("User not found for update:", userId);
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (fullName !== undefined) user.fullName = fullName;
+    if (bio !== undefined) user.bio = bio;
+    
+    if (req.file) {
+      console.log("Uploading profile image for user:", userId);
+      const uploadFile = await imagekit.files.upload({
+        file: await toFile(Buffer.from(req.file.buffer), "file"),
+        fileName: `${user.username}-profile`,
+        folder: "profile_pictures",
+      });
+      user.profileImage = uploadFile.url;
+    } else if (profileImage !== undefined) {
+      user.profileImage = profileImage;
+    }
+
+    await user.save();
+    console.log("Profile updated successfully for user:", userId);
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        username: user.username,
+        email: user.email,
+        fullName: user.fullName,
+        bio: user.bio,
+        profileImage: user.profileImage,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating profile", error: error.message });
+  }
+}
+
 module.exports = {
   followUserController,
   unfollowUserController,
   updateFollowStatusController,
+  updateProfileController,
 };
