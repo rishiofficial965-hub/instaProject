@@ -1,7 +1,7 @@
 import React, { useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
-import { PostContext } from "../postContext";
+import { PostContext } from "../PostContext";
 import { usePost } from "../hook/usePost";
 
 const AddPost = () => {
